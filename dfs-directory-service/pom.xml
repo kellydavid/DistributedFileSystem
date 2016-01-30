@@ -4,9 +4,10 @@
   <groupId>com.kellydavid.dfs</groupId>
   <artifactId>dfs-directory-service</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <name>dfs-directory-service</name>
   <url>http://maven.apache.org</url>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -15,4 +16,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
 </project>
