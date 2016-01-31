@@ -14,7 +14,7 @@ public class App
 
     private static ServerSocket ss;
     private static ThreadPoolExecutor requestThreads;
-    private static Advertiser advertiser;
+    private static FileListing fileListing;
     private static InetAddress dsAddress; // IP address directory service
     private static int dsPort; // port number directory service
 
@@ -29,7 +29,7 @@ public class App
         int portNumber = Integer.parseInt(args[1]);
 
         // intialise variables
-        initialiseAdvertiser();
+        initialiseAdvertiser(portNumber);
         initialiseServerSocket(hostname, portNumber);
         requestThreads = new ThreadPoolExecutor(CONNECTION_POOL_SIZE, CONNECTION_POOL_SIZE, 1000,
                 TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
@@ -38,13 +38,13 @@ public class App
         listen();
     }
 
-    private static void generateFileListing(){}
-
-    private static void initialiseAdvertiser(){
+    private static void initialiseAdvertiser(int listeningPort){
         System.out.print("Directory Service IP address: ");
         String address = System.console().readLine();
-        System.out.print("\nDFSFS: Directory Service port number: ");
+        System.out.print("DFSFS: Directory Service port number: ");
         String port = System.console().readLine();
+        System.out.print("DFSFS: Enter directory path to advertise: ");
+        String directory = System.console().readLine();
         System.out.println();
         try {
             dsAddress = InetAddress.getByName(address);
@@ -54,8 +54,10 @@ public class App
             System.exit(-1);
         }
         dsPort = Integer.parseInt(port);
-
-        advertiser = new Advertiser(dsAddress, dsPort);
+        // create new file listing and advertise it
+        fileListing = new FileListing(directory, listeningPort, dsAddress, dsPort);
+        fileListing.initialiseFileListing();
+        fileListing.advertiseFileListing();
     }
 
     private static void initialiseServerSocket(String hostname, int portNumber){
@@ -77,7 +79,7 @@ public class App
                 System.out.print("DFSFS: Listening for connections...\n");
                 // Setup a new Connection thread when a new client connects.
                 Socket so = ss.accept();
-                requestThreads.execute(new RequestProcessor(so, dsAddress, dsPort));
+                requestThreads.execute(new RequestProcessor(so, fileListing));
             }
         } catch (Exception e) {
             System.err.println("DFSFS: Error while listening for connections.\n");

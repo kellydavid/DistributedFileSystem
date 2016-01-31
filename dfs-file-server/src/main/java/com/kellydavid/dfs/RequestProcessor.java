@@ -9,9 +9,11 @@ import java.io.InputStreamReader;
 public class RequestProcessor implements Runnable{
 
     private Socket so;
+    private FileListing fileListing;
 
-    public RequestProcessor(Socket so, Advertiser advertiser){
+    public RequestProcessor(Socket so, FileListing fileListing){
         this.so = so;
+        this.fileListing = fileListing;
     }
 
     public void run(){
