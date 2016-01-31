@@ -1,4 +1,4 @@
-package com.kellydavid.dfs;
+package com.kellydavid.dfs.ds;
 
 import java.net.Socket;
 import java.io.BufferedReader;

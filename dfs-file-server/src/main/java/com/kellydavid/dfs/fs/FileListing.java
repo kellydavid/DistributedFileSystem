@@ -1,4 +1,4 @@
-package com.kellydavid.dfs;
+package com.kellydavid.dfs.fs;
 
 
 import java.io.File;
@@ -21,6 +21,7 @@ public class FileListing implements FileListingUpdateListener{
     private int listeningPort;
 
     public FileListing(Configurator config, int listeningPort){
+        fileList = new HashMap<>();
         this.directory = config.getValue("DIRECTORY");
         try {
             this.dsAddress = InetAddress.getByName(config.getValue("DS_ADDRESS"));

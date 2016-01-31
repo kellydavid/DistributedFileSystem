@@ -1,7 +1,6 @@
-package com.kellydavid.dfs;
+package com.kellydavid.dfs.fs;
 
 
-import java.net.InetAddress;
 import java.net.Socket;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

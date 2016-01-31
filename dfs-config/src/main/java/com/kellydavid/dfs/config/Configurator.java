@@ -22,8 +22,8 @@ public class Configurator {
             reader = new BufferedReader(new FileReader(filename));
             String line = reader.readLine();
             while (line != null) {
-                line = reader.readLine();
                 addConfigLine(line);
+                line = reader.readLine();
             }
             reader.close();
         }catch(FileNotFoundException fnfe){
@@ -41,12 +41,17 @@ public class Configurator {
     }
 
     private void addConfigLine(String line){
-        String key = line.split("=")[0];
-        String value = line.split("=")[1];
-        if(!configuration.containsKey(key)) {
-            configuration.put(key, value);
-        }else{
-            System.err.println("Warning duplicate value for " + key + " encountered.");
+        String split[] = line.split("=");
+        if(split.length != 2){
+            return;
+        }else {
+            String key = split[0];
+            String value = split[1];
+            if (!configuration.containsKey(key)) {
+                configuration.put(key, value);
+            } else {
+                System.err.println("Warning duplicate value for " + key + " encountered.");
+            }
         }
     }
 

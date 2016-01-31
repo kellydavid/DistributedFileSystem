@@ -1,4 +1,4 @@
-package com.kellydavid.dfs;
+package com.kellydavid.dfs.fs;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
