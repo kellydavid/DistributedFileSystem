@@ -12,6 +12,8 @@
     <module>dfs-config</module>
     <module>dfs-directory-service</module>
     <module>dfs-file-server</module>
+    <module>dfs-client</module>
+    <module>dfs-locking-service</module>
   </modules>
 
   <build>
