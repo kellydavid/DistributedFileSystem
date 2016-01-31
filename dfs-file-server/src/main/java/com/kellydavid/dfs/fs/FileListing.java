@@ -44,6 +44,7 @@ public class FileListing implements FileListingUpdateListener{
 
     @Override
     public void advertiseFileListing(){
+        System.out.print("DFSFS: Advertising file listing...\n");
         String files = " ";
         for(String key : fileList.keySet()){
             files += key + " ";

@@ -26,8 +26,11 @@ public class App
             System.exit(-1);
         }
 
+        // get configuration
+        System.out.print("DFSFS: Loading configuration...\n");
         config = new Configurator(args[0]);
         config.loadConfiguration();
+        System.out.print("DFSFS: Configuration Loaded\n");
         String address = config.getValue("ADDRESS");
         listeningPort = Integer.parseInt(config.getValue("PORT"));
 
@@ -43,6 +46,7 @@ public class App
 
     private static void initialiseFileListing(int listeningPort){
         // create new file listing and advertise it
+        System.out.print("DFSFS: Intialising file listing...\n");
         fileListing = new FileListing(config, listeningPort);
         fileListing.initialiseFileListing();
         fileListing.advertiseFileListing();

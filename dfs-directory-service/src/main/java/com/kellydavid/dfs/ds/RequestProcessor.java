@@ -56,15 +56,19 @@ public class RequestProcessor implements Runnable{
         // Takes request of the form
         // "GET_FILE: file_name \n"
 
-        String filename = request.split(" ")[1];
-        String fsnId = findFileLocation(filename);
+        String split[] = request.split(" ");
+        if(split.length == 2) {
+            String filename = split[1];
+            String fsnId = findFileLocation(filename);
 
-        // send file location
-        if(fsnId == null){
-            sendResponse("FILE_NOT_FOUND\n");
-        }else {
-            sendResponse("FILE_LOCATED " + fsnId + " \n");
-        }
+            // send file location
+            if (fsnId == null) {
+                sendResponse("FILE_NOT_FOUND\n");
+            } else {
+                sendResponse("FILE_LOCATED " + fsnId + " \n");
+            }
+        }else
+            sendResponse("NO_FILENAME_PROVIDED\n");
     }
 
     private synchronized String findFileLocation(String filename){
@@ -80,28 +84,32 @@ public class RequestProcessor implements Runnable{
         // Takes request of the form
         // "PUT_FILE: file_name \n"
 
-        String filename = request.split(" ")[1];
-        String fsnId = findFileLocation(filename);
+        String split[] = request.split(" ");
+        if(split.length == 2) {
+            String filename = split[1];
+            String fsnId = findFileLocation(filename);
 
-        // no file servers available
-        if(fileServerNodes.size() == 0){
-            sendResponse("NO_FILE_SERVERS_AVAILABLE\n");
-        }
-        // file already in a location, update
-        else if (fsnId != null){
-            sendResponse("FILE_LOCATED " + fsnId + " \n");
-        }
-        // find a file server with least amount of files as new location
-        else{
-            for(Map.Entry<String, LinkedList<String>> entry : fileServerNodes.entrySet()){
-                if(fsnId.equals("")){
-                    fsnId = (String)entry.getKey();
-                }else if(entry.getValue().size() < fileServerNodes.get(fsnId).size()){
-                    fsnId = (String)entry.getKey();
-                }
+            // no file servers available
+            if (fileServerNodes.size() == 0) {
+                sendResponse("NO_FILE_SERVERS_AVAILABLE\n");
             }
-            sendResponse("FILE_LOCATED " + fsnId + " \n");
-        }
+            // file already in a location, update
+            else if (fsnId != null) {
+                sendResponse("FILE_LOCATED " + fsnId + " \n");
+            }
+            // find a file server with least amount of files as new location
+            else {
+
+                for (Map.Entry<String, LinkedList<String>> entry : fileServerNodes.entrySet()) {
+                    if(fsnId == null){
+                        fsnId = entry.getKey();
+                    } else if (entry.getValue().size() < fileServerNodes.get(fsnId).size()) {
+                        fsnId = entry.getKey();
+                    }
+                }
+                sendResponse("FILE_LOCATED " + fsnId + " \n");
+            }
+        }else sendResponse("NO_FILENAME_PROVIDED\n");
     }
 
     private synchronized void advertiseHandler(String request){
