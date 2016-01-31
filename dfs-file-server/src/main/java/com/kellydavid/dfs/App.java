@@ -3,10 +3,10 @@ package com.kellydavid.dfs;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.InetSocketAddress;
-import java.net.InetAddress;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import com.kellydavid.dfs.config.Configurator;
 
 public class App
 {
@@ -15,22 +15,25 @@ public class App
     private static ServerSocket ss;
     private static ThreadPoolExecutor requestThreads;
     private static FileListing fileListing;
-    private static InetAddress dsAddress; // IP address directory service
-    private static int dsPort; // port number directory service
+    private static int listeningPort;
+    private static Configurator config;
 
     public static void main( String[] args )
     {
         // Get hostname and port number
-        if(args.length != 2){
-            System.out.println("DFSFS: Must use arguments <hostname> <port-number>\n");
+        if(args.length != 1){
+            System.out.println("DFSFS: Must supply path to config file as argument.\n");
             System.exit(-1);
         }
-        String hostname = args[0];
-        int portNumber = Integer.parseInt(args[1]);
+
+        config = new Configurator(args[0]);
+        config.loadConfiguration();
+        String address = config.getValue("ADDRESS");
+        listeningPort = Integer.parseInt(config.getValue("PORT"));
 
         // intialise variables
-        initialiseAdvertiser(portNumber);
-        initialiseServerSocket(hostname, portNumber);
+        initialiseFileListing(listeningPort);
+        initialiseServerSocket(address, listeningPort);
         requestThreads = new ThreadPoolExecutor(CONNECTION_POOL_SIZE, CONNECTION_POOL_SIZE, 1000,
                 TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
@@ -38,24 +41,9 @@ public class App
         listen();
     }
 
-    private static void initialiseAdvertiser(int listeningPort){
-        System.out.print("Directory Service IP address: ");
-        String address = System.console().readLine();
-        System.out.print("DFSFS: Directory Service port number: ");
-        String port = System.console().readLine();
-        System.out.print("DFSFS: Enter directory path to advertise: ");
-        String directory = System.console().readLine();
-        System.out.println();
-        try {
-            dsAddress = InetAddress.getByName(address);
-        }catch(Exception e){
-            System.err.println("DFSFS: Error getting directory service address\n");
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        dsPort = Integer.parseInt(port);
+    private static void initialiseFileListing(int listeningPort){
         // create new file listing and advertise it
-        fileListing = new FileListing(directory, listeningPort, dsAddress, dsPort);
+        fileListing = new FileListing(config, listeningPort);
         fileListing.initialiseFileListing();
         fileListing.advertiseFileListing();
     }

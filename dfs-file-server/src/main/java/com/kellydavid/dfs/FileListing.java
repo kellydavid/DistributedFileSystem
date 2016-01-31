@@ -4,8 +4,9 @@ package com.kellydavid.dfs;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Map;
+import com.kellydavid.dfs.config.Configurator;
 
 interface FileListingUpdateListener{
 
@@ -19,10 +20,16 @@ public class FileListing implements FileListingUpdateListener{
     private int dsPort;
     private int listeningPort;
 
-    public FileListing(String directory, int listeningPort, InetAddress dsAddress, int dsPort){
-        this.directory = directory;
-        this.dsAddress = dsAddress;
-        this.dsPort = dsPort;
+    public FileListing(Configurator config, int listeningPort){
+        this.directory = config.getValue("DIRECTORY");
+        try {
+            this.dsAddress = InetAddress.getByName(config.getValue("DS_ADDRESS"));
+        }catch(UnknownHostException e){
+            System.err.println("DFSFS: Could not find dsAddress for " + config.getValue("DS_ADDRESS"));
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        this.dsPort = Integer.parseInt(config.getValue("DS_PORT"));
         this.listeningPort = listeningPort;
     }
 

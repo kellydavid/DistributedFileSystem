@@ -1,0 +1,5 @@
+ADDRESS=localhost
+PORT=7171
+DS_ADDRESS=localhost
+DS_PORT=8001
+DIRECTORY=fsn1
