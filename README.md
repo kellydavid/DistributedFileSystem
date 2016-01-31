@@ -1,2 +1,2 @@
 # DistributedFileSystem
-A Distributed File System implementation in scala.
+A Distributed File System implementation in Java.
